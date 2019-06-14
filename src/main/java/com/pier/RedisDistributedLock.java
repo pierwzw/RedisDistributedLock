@@ -181,12 +181,12 @@ public class RedisDistributedLock {
         if (StringUtils.isBlank(token)) {
             return;
         }
-        threadLocal.remove();
-
         try {
             jedis.eval(LUA_UNLOCK_SCRIPT, Collections.singletonList(key), Collections.singletonList(token));
         } catch (Exception e) {
             logger.error("redis lock release: {}", e.getMessage());
+        }finally {
+            threadLocal.remove();
         }
     }
 
